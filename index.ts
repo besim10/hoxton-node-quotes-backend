@@ -1,7 +1,9 @@
 import express from 'express'
+import cors from 'cors'
 const app = express()
 const PORT = 8000
 
+app.use(cors())
 type Quote = {
     id: number
     name: string
@@ -71,7 +73,7 @@ const quotes: Quote[] = [
     {
         id: 13,
         name: 'Margaret Thatcher',
-        text: 'n politics, if you want anything said, ask a man; if you want anything done, ask a woman.'
+        text: 'In politics, if you want anything said, ask a man; if you want anything done, ask a woman.'
     },
     {
         id: 14,
@@ -126,4 +128,15 @@ app.get('/random', (req, res) => {
     const randomNumber = Math.floor(Math.random() * quotes.length) + 1
     const randomQuote = quotes.find(quote => quote.id === randomNumber)
     res.send(randomQuote);
+});
+const randomNumber = Math.floor(Math.random() * quotes.length)
+app.get('/quote-of-the-day', (req, res) => {
+    const randomQuote = quotes[randomNumber]
+    res.send(randomQuote);
+});
+app.get('/quotes/:searchedvalue', (req, res) => {
+    const searchedvalue = req.params.searchedvalue;
+    let updatedQuotes = quotes
+    updatedQuotes = updatedQuotes.filter(quote => quote.text.toLowerCase().includes(searchedvalue.toLowerCase()))
+    res.send(updatedQuotes);
   });
